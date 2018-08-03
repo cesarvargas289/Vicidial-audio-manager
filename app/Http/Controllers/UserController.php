@@ -80,22 +80,19 @@ class UserController extends Controller
             'password' => bcrypt($request['password']),
         ]);
 
-
         //Asignación de roles al usuario en tabla intermedia
         $user_id =DB::getPdo()->lastInsertId();
         $rol = Input::get('rol');
         $rol_id = DB::table('roles')->where('name', $rol)->value('id');
         Rol_User::create(['role_id'=>$rol_id, 'user_id'=>$user_id]);
 
-
         //Asignación de campañas a el usuario en tabla intermedia
         foreach(Input::get('campaigns') as $campaigns){
         $campaign_id = DB::table('campaigns')->where('name', $campaigns)->value('id');
         Campaign_User::create(['campaign_id'=>$campaign_id, 'user_id'=>$user_id]);
-
             }
-        //Redireccionar
 
+        //Redireccionar
         Return redirect()->route('user.index');
 
 
@@ -128,8 +125,13 @@ class UserController extends Controller
         $roles_user = Rol_User::all();
         $selectedvalue_rol = DB::table('role_user')->where('user_id', $id)->value('role_id');
         $campaigns_user = Campaign_User::all();
-
-        return view('user.edit', compact('user', 'campaigns', 'roles', 'roles_user', 'selectedvalue_rol', 'campaigns_user'));
+        $selectedvalue_campaign = array();
+        foreach ($campaigns_user as $campaign_user){
+            if($id == $campaign_user->user_id ){
+                $selectedvalue_campaign[$campaign_user->id]= $campaign_user->campaign_id;
+            }
+        }
+        return view('user.edit', compact('user', 'campaigns', 'roles', 'roles_user', 'selectedvalue_rol', 'campaigns_user', 'selectedvalue_campaign'));
     }
 
     /**
@@ -145,8 +147,12 @@ class UserController extends Controller
 
         //Actualizacion de rol al usuario en tabla intermedia
         $rol = Input::get('rol');
-       Rol_User::where('user_id', $id)->update(['role_id' => $rol]);
+        Rol_User::where('user_id', $id)->update(['role_id' => $rol]);
         User::findOrFail($id)->update($request->all());
+        User::findOrFail($id)->update( [
+                'password' => bcrypt($request['password']),
+            ]
+        );
         //Redireccionamos
         return redirect()->route('user.index');
     }

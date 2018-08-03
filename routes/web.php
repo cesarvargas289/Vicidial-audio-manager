@@ -1,5 +1,6 @@
 <?php
-
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -37,16 +38,6 @@ Route::resource('campaign', 'CampaignController');
 Route::get('audio', 'AudioController@indexGet');
 //Route::post('audio', 'AudioController@indexPost');
 Route::post('audio', ['as' => 'audio.post', 'uses' => 'AudioController@indexPost']);
-Route::get('audio/download/{campana}/{audio}',  'AudioController@download');
+Route::get('audio/download/{campana}/{mes}/{audio}',  'AudioController@download');
 
-
-Route::get('/information/create/ajax-state',function()
-{
-    $campana = Input::get('campana');
-    $rootPath = '/home/cesar/Audios/'.$campana.'/';
-
-    $subcategories = Storage::allDirectories($rootPath);
-    return $subcategories;
-
-});
-
+Route::get('audio/meses', 'AudioController@meses');

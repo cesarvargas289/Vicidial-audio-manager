@@ -10,7 +10,6 @@
     <table width="100%">
         <thead>
         <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Correo</th>
             <th>rol</th>
@@ -22,7 +21,6 @@
         <tbody>
         @foreach($usuarios as $usuario)
             <tr>
-                <td>{{ $usuario->id }}</td>
                 <td>{{ $usuario->name }}</td>
                 <td>{{ $usuario->email }}</td>
                 @foreach($rol_de_usuarios as $rol_de_usuario)

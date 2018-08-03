@@ -1,12 +1,8 @@
 @extends('adminlte::layouts.app')
 
-<?php use App\Http\Controllers\AudioController;?>
-
-<link rel="stylesheet" href="http://demo.itsolutionstuff.com/plugin/bootstrap-3.min.css">
-<link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
-<script src="http://demo.itsolutionstuff.com/plugin/jquery.js"></script>
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
 @section('contentheader_title')
     Audios
@@ -19,7 +15,7 @@
         <label for="campaign">
             Campaña
             <select class="form-control" name="campaigns" id="campaigns">
-
+                <option value="0" disable="true" selected="true">=== Select campaña ===</option>
                 @foreach($campaigns_user as $campaign_user)
                     @foreach($campaigns as $campaign)
                         @if($userId == $campaign_user->user_id)
@@ -30,17 +26,18 @@
                         @endif
                     @endforeach
                 @endforeach
+
             </select>
         </label>
 
         <label for="mes">
             Mes
             <select id="mes" class="form-control" name="mes">
-                <option value=""></option>
+                <option value="mes"></option>
             </select>
         </label>
-        <input type="submit" value="Buscar">
 
+        <input type="submit" value="Buscar">
     </form>
     @if (isset($audios))
         <table id="audio-table" class="table table-bordered" width="100%">
@@ -64,17 +61,23 @@
 @endsection
 
 
-<script>
-    $('#campaign').on('change', function(e){
-        console.log(e);
-        var campana = e.target.value;
 
-        $.get('{{ url('information') }}/create/ajax-state?campana=' + campana, function(data) {
-            console.log(data);
-            $('#mes').empty();
-            $.each(data, function(index,subCatObj){
-                $('#mes').append(''+subCatObj.name+'');
+<script>
+
+    $(document).ready(function(){
+        $('#campaigns').on('change', function(e){
+            console.log(e);
+            var campaigns = e.target.value;
+            $.get('/audio/meses?campaigns=' + campaigns,function(data) {
+                console.log(data);
+                $('#mes').empty();
+                $('#mes').append('<option value="0" disable="true" selected="true">=== Select Mes ===</option>');
+
+                $.each(data, function(index, regenciesObj){
+                    $('#mes').append('<option value='+String(regenciesObj)+'>'+ String(regenciesObj)+'</option>');
+                })
             });
         });
     });
+
 </script>

@@ -13,6 +13,8 @@ use App\Campaign_User;
 use Illuminate\Support\Facades\Auth;
 use App\Campaign;
 use Config;
+use Illuminate\Support\Facades\Input;
+use App\User;
 
 class AudioController extends Controller
 {
@@ -45,7 +47,9 @@ class AudioController extends Controller
 
     public function indexPost(Request $request){
         $campana = $request->get('campaigns');
-        $audios= Storage::allFiles('/'.$campana.'/');
+        $mes = $request->input('mes');
+        $audios= Storage::allFiles('/'.$campana.'/'.$mes.'/');
+        
         $userId = Auth::id();
         $campaigns_user = Campaign_User::all();
         $campaigns= Campaign::all();
@@ -55,10 +59,29 @@ class AudioController extends Controller
 
 
     //Función para descargar el archivo de la carpeta
-    public function download( $campana, $file){
-        $rootPath = '/home/cesar/Audios/'.$campana.'/';
+    public function download( $campana, $mes, $file){
+        $rootPath = '/home/cesar/Audios/'.$campana.'/'.$mes.'/';
         $client = Storage::createLocalDriver(['root' => $rootPath]);
 //        Config::set('filesystems.disks', $client);
         return response()->download( $client->getDriver()->getAdapter()->applyPathPrefix($file));
     }
+
+    public function meses(Request $request){
+
+        $campana = Input::get('campaigns');
+        $lista_meses= Storage::alldirectories('/'.$campana.'/');
+        $array= (array) $lista_meses;
+        $array2 = array();
+        foreach($array as $mes){
+
+            $mes_actualizado = explode($campana."/", $mes);
+          //  $array[$mes] = $mes_actualizado;
+            $prueba = implode('', $mes_actualizado);
+            $array2[]= $prueba;
+        }
+        return Response::json($array2);
+    }
+
+
+
 }
