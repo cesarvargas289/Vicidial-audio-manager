@@ -12,32 +12,26 @@ use Carbon\Carbon;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//Rutas de login
+$this->get('login', 'Auth\LoginController@showLoginForm')->name('login');
+$this->post('login', 'Auth\LoginController@login');
+$this->post('logout', 'Auth\LoginController@logout')->name('logout');
+$this->get('/', 'Auth\LoginController@showLoginForm')->name('login');
+$this->post('/', 'Auth\LoginController@login');
 
-Route::group(['middleware' => 'auth'], function () {
-    //    Route::get('/link1', function ()    {
-//        // Uses Auth Middleware
-//    });
-
-    //Please do not remove this if you want adminlte:route and adminlte:link commands to works correctly.
-    #adminlte_routes
-});
-
-
-Route::resource('user', 'UserController');
-
+//Rutas de Errors
 Route::get('401',['as'=>'401','uses'=>'ErrorHandlerController@errorCode401']);
 Route::get('404',['as'=>'404','uses'=>'ErrorHandlerController@errorCode404']);
 Route::get('405',['as'=>'405','uses'=>'ErrorHandlerController@errorCode405']);
 
+
+//Rutas de user, rol y campaigns
+Route::resource('user', 'UserController');
 Route::resource('rol', 'RoleController');
 Route::resource('campaign', 'CampaignController');
 
+//Rutas de audio
 Route::get('audio', 'AudioController@indexGet');
-//Route::post('audio', 'AudioController@indexPost');
 Route::post('audio', ['as' => 'audio.post', 'uses' => 'AudioController@indexPost']);
 Route::get('audio/download/{campana}/{mes}/{audio}',  'AudioController@download');
-
 Route::get('audio/meses', 'AudioController@meses');

@@ -26,7 +26,7 @@
                 <li><a href="{{ route('user.index') }}"><i class='fa fa-user'></i> <span>Usuarios</span></a></li>
                 <li><a href="{{ route('campaign.index') }}"><i class='fa fa-building'></i> <span>Campañas</span></a></li>
             @endif
-            <li><a href=""><i class='fa fa-volume-up'></i> <span>Audios</span></a></li>
+            <li><a href="{{ url('audio') }}"><i class='fa fa-volume-up'></i> <span>Audios</span></a></li>
         </ul><!-- /.sidebar-menu -->
     </section>
     <!-- /.sidebar -->

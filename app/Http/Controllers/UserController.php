@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use DB;
-use Carbon\Carbon;
-use App\Http\Requests;
-use App\User;
-use App\Role;
-use App\Rol_User;
-use Illuminate\Support\Facades\Input;
-use App\Campaign_User;
 use App\Campaign;
+use App\Campaign_User;
+use App\Http\Requests;
+use App\Rol_User;
+use App\Role;
+use App\User;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use Yajra\Datatables\Datatables;
 
 
 class UserController extends Controller
@@ -36,9 +37,6 @@ class UserController extends Controller
         $campaigns_user = Campaign_User::all();
         $campaigns= Campaign::all();
         $campanas ='';
-
-
-
         return view('user.index', compact('usuarios', 'roles', 'rol_de_usuarios', 'campaigns_user', 'campaigns', 'campanas'));
     }
 
@@ -66,14 +64,12 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->user()->authorizeRoles('admin');
-
         $this->validate($request, [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
 
         ]);
-
         $user = User::create([
             'name' => $request['name'],
             'email' => $request['email'],
@@ -120,7 +116,7 @@ class UserController extends Controller
         $request->user()->authorizeRoles('admin');
 
         $user = User::findOrFail($id);
-        $campaigns = Campaign::all();
+        $campaigns = Campaign::orderBy('name')->pluck('name', 'id');
         $roles = Role::all();
         $roles_user = Rol_User::all();
         $selectedvalue_rol = DB::table('role_user')->where('user_id', $id)->value('role_id');
@@ -131,7 +127,8 @@ class UserController extends Controller
                 $selectedvalue_campaign[$campaign_user->id]= $campaign_user->campaign_id;
             }
         }
-        return view('user.edit', compact('user', 'campaigns', 'roles', 'roles_user', 'selectedvalue_rol', 'campaigns_user', 'selectedvalue_campaign'));
+
+        return view('user.edit', compact('user', 'campaigns', 'roles', 'roles_user', 'selectedvalue_rol', 'campaigns_user', 'selectedvalue_campaign', 'id'));
     }
 
     /**
@@ -153,6 +150,23 @@ class UserController extends Controller
                 'password' => bcrypt($request['password']),
             ]
         );
+        $campaign_users= Campaign_User::all();
+
+        //Función para eliminar los registros en la tabla intermedia
+        foreach ($campaign_users as $campaign_user){
+            $deletedRows = Campaign_User::where('user_id', $id)->delete();
+        }
+
+        //Función para agregar nuevos registros en la tabla intermedia
+        $user_id = Campaign_User::all()->pluck('user_id')->toArray();
+        foreach (Input::get('campaigns') as $campaign){
+            if(in_array($id, $user_id)){
+                Campaign_User::updateOrCreate(['campaign_id'=>$campaign, 'user_id'=>$id]);
+            }else{
+                Campaign_User::create(['campaign_id'=>$campaign, 'user_id'=>$id]);
+            }
+        }
+
         //Redireccionamos
         return redirect()->route('user.index');
     }
@@ -166,23 +180,14 @@ class UserController extends Controller
     public function destroy(Request $request, $id)
     {
         $request->user()->authorizeRoles('admin');
-
         User::findOrFail($id)->delete();
-
         $id_role = DB::table('role_user')->where('user_id', $id)->value('id');
-
         //Borra la relación en tabla role_user entre usuario y rol
         Rol_User::findOrFail($id_role)->delete();
-
-
-
-
         $campaign_users= Campaign_User::all();
         foreach ($campaign_users as $campaign_user){
-            $id_campaign_user = DB::table('campaign_user')->where('user_id', $id)->value('id');
-            Campaign_User::findOrFail($id_campaign_user)->delete();
+            $deletedRows = Campaign_User::where('user_id', $id)->delete();
         }
-
         //Redireccionar
         return redirect()->route('user.index');
     }

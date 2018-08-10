@@ -55,7 +55,7 @@
                             <div class="form-group">
                             <label class="col-sm-2 control-label" for="campaign"> Campaña </label>
                                 <div class="col-sm-10">
-                                    <select class="form-control" multiple="multiple" name="campaigns[]" id="campaigns">
+                                    <select class="form-control" multiple="multiple" name="campaigns[]" required id="campaigns">
                                         <option value="" disabled selected>Escoge las Campañas</option>
                                         @foreach($campaigns as $campaign)
                                             <option >{{$campaign->name}}</option>

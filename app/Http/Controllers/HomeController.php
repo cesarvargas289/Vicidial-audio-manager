@@ -9,6 +9,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use App\User;
+use App\Campaign;
+use Illuminate\Support\Facades\Auth;
+use App\Campaign_User;
 
 /**
  * Class HomeController
@@ -33,6 +37,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('adminlte::home');
+        $userId = Auth::id();
+        $usuarios = User::all();
+        $campaigns= Campaign::all();
+        $campaigns_user = Campaign_User::all();
+
+        return view('adminlte::home', compact('usuarios', 'campaigns', 'userId', 'campaigns_user'));
     }
 }

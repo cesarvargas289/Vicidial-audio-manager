@@ -124,7 +124,7 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
-        Yajra\DataTables\DataTablesServiceProvider::class,
+        yajra\Datatables\DatatablesServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Bus\BusServiceProvider::class,
@@ -177,7 +177,7 @@ return [
 
     'aliases' => [
 
-        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'Datatables' => yajra\Datatables\Datatables::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,

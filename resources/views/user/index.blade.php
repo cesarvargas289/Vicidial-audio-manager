@@ -7,7 +7,7 @@
 @section('main-content')
 
     <a href="{{route('user.create')}}" class="btn btn-default btn-sm">Crear</a>
-    <table width="100%">
+    <table id="user-table"  width="100%">
         <thead>
         <tr>
             <th>Nombre</th>
@@ -63,3 +63,4 @@
     </table>
 
 @endsection
+
