@@ -9,7 +9,7 @@
     <div id="app">
         <div class="login-box">
             <div class="login-logo">
-                <a href="{{ url('/home') }}"><b>Login</b></a>
+                <a href="{{ url('/home') }}"><img src="{{ asset('img/Logo_dish_actual.png') }}"></a>
             </div><!-- /.login-logo -->
 
         @if (count($errors) > 0)
@@ -40,11 +40,13 @@
                 </div><!-- /.col -->
             </div>
         </form>
-            
 
-    </div><!-- /.login-box-body -->
+        </div><!-- /.login-box-body -->
+            <div class="login-logo">
+                <a href="{{ url('/home') }}"><img src="{{ asset('img/vicidial.jpg') }}"></a>
+            </div>
+        </div><!-- /.login-box -->
 
-    </div><!-- /.login-box -->
     </div>
     @include('adminlte::layouts.partials.scripts_auth')
 

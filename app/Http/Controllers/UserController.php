@@ -141,18 +141,29 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
 
+        $password = Input::get('password');
 
-        //Actualizacion de rol al usuario en tabla intermedia
-        $rol = Input::get('rol');
-        Rol_User::where('user_id', $id)->update(['role_id' => $rol]);
-        User::findOrFail($id)->update($request->all());
-        User::findOrFail($id)->update( [
-                'password' => bcrypt($request['password']),
-            ]
-        );
-        $campaign_users= Campaign_User::all();
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string|min:6',
+
+        ]);
+
+        //Se verifica si el password esta encriptado si lo está, actualiza todo menos el password si no, encripta el password y actualiza
+        if( strlen($password) == 60 ){
+            User::findOrFail($id)->update($request->except('password'));
+        }else{
+            User::findOrFail($id)->update($request->all());
+            User::findOrFail($id)->update( [
+                    'password' => bcrypt($request['password']),
+                ]
+            );
+        }
+
 
         //Función para eliminar los registros en la tabla intermedia
+        $campaign_users= Campaign_User::all();
         foreach ($campaign_users as $campaign_user){
             $deletedRows = Campaign_User::where('user_id', $id)->delete();
         }
@@ -166,6 +177,11 @@ class UserController extends Controller
                 Campaign_User::create(['campaign_id'=>$campaign, 'user_id'=>$id]);
             }
         }
+
+        //Actualizacion de rol al usuario en tabla intermedia
+        $rol = Input::get('rol');
+        Rol_User::where('user_id', $id)->update(['role_id' => $rol]);
+
 
         //Redireccionamos
         return redirect()->route('user.index');

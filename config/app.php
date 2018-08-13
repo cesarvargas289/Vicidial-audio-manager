@@ -124,6 +124,7 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
+        Laraveles\Spanish\SpanishServiceProvider::class,
         yajra\Datatables\DatatablesServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,

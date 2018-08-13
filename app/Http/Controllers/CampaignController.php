@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Campaign;
+use App\Campaign_User;
 
 class CampaignController extends Controller
 {
@@ -106,6 +107,11 @@ class CampaignController extends Controller
         $request->user()->authorizeRoles('admin');
 
         Campaign::findOrFail($id)->delete();
+
+        $campaign_users= Campaign_User::all();
+        foreach ($campaign_users as $campaign_user){
+            $deletedRows = Campaign_User::where('campaign_id', $id)->delete();
+        }
 
         //Redireccionar
         return redirect()->route('campaign.index');
