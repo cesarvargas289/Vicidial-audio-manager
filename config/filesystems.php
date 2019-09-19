@@ -50,7 +50,7 @@ return [
 
         'custom' => [
             'driver' => 'local',
-            'root' => '/home/cesar/Audios/',
+            'root' => '/var/spool/asterisk/monitorDONE/MP3',
         ],
 
         'public' => [

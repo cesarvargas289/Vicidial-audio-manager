@@ -85,7 +85,8 @@ desired effect
                                                 @foreach($roles as $rol)
                                                     @foreach($roles_user as $rol_user)
                                                     @endforeach
-                                                    <option value="{{ $rol->id }}" @if($user->id==$rol_user->user_id) {{ $selectedvalue_rol == $rol->id ? 'selected="selected"' : '' }} @endif >{{ $rol->name}}</option>
+                                                    <option value="{{ $rol->id }}"
+                                                    @if($id == $rol_user->user_id) {{ $selectedvalue_rol == $rol->id ? "selected":"" }}@endif >{{ $rol->name}}</option>
                                                     {!! $errors->first('id', '<span class=error>:message</span>')  !!}
                                                 @endforeach
                                             </select>
@@ -94,7 +95,7 @@ desired effect
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label" for="campaigns"> Campaña </label>
                                         <div class="col-sm-10">
-                                            {!! Form::select('campaigns[]',$campaigns,$selectedvalue_campaign,['class'=>'form-control', 'multiple'], ['required']) !!}
+                                            {!! Form::select('campaigns[]',$campaigns,$selectedvalue_campaign,['class'=>'form-control', 'multiple', 'required']) !!}
                                         </div>
                                     </div>
                                     <input type="submit" value="Enviar">

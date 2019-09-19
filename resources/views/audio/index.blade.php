@@ -81,7 +81,7 @@
         $('#campaigns').on('change', function(e){
             console.log(e);
             var campaigns = e.target.value;
-            $.get('/audio/meses?campaigns=' + campaigns,function(data) {
+            $.get('audio/meses?campaigns=' + campaigns,function(data) {
                 console.log(data);
                 $('#mes').empty();
                 $('#mes').append('<option value="0" disable="true" selected="true">=== Selecciona Mes ===</option>');
